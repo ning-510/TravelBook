@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>旅遊手帳</title>
     
+    <!-- 1. 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -23,7 +24,10 @@
         }
     </script>
 
+    <!-- 2. 引入字型 -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- 3. 引入 React -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -36,7 +40,7 @@
         .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
         .content-area { padding-bottom: 80px; }
 
-        /* 大眾運輸卡片樣式 */
+        /* 交通卡片專屬樣式 (仿照使用者提供之圖片) */
         .transit-card { 
             border-radius: 12px; 
             overflow: hidden; 
@@ -46,7 +50,7 @@
             margin-bottom: 16px;
         }
         .transit-header { 
-            background-color: #d33c1a; 
+            background-color: #d33c1a; /* 圖片中的橘紅色 */
             padding: 10px 16px; 
             display: flex; 
             justify-content: space-between; 
@@ -73,6 +77,7 @@
         .transit-time { font-size: 12px; color: #94a3b8; font-family: monospace; font-weight: bold; letter-spacing: 1px; margin-bottom: 12px; }
         .transit-time-bottom { font-size: 12px; color: #94a3b8; font-family: monospace; font-weight: bold; letter-spacing: 1px; margin-top: 12px; }
         
+        /* 移除飛機的連接線設計 */
         .transit-line { width: 100%; height: 2px; background-color: #cbd5e1; position: relative; }
         .transit-line::after { content: ''; position: absolute; right: 0; top: -3px; width: 8px; height: 8px; border-radius: 50%; background-color: #cbd5e1; }
     </style>
@@ -98,7 +103,8 @@
             Utensils: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>,
             Bed: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><path d="M6 8v9"/></svg>,
             Moon: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>,
-            ShoppingCart: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+            ShoppingCart: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>,
+            ExternalLink: (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
         };
 
         const { useState, useEffect } = React;
@@ -267,7 +273,6 @@
                 }
             };
 
-            // 修正：確實加上 addNewDay 與 deleteDay 的執行邏輯
             const addNewDay = () => {
                 const newDayNum = tripData.length > 0 ? Math.max(...tripData.map(d => d.day)) + 1 : 1;
                 const newDayData = { day: newDayNum, rawDate: "", date: `Day ${newDayNum}`, mainTitle: "", itinerary: [] };
@@ -287,7 +292,7 @@
                     if(currentDay === dayNum && newTripData.length > 0) {
                         setCurrentDay(newTripData[0].day);
                     } else if (newTripData.length === 0) {
-                        setCurrentDay(1); // 避免全空當機
+                        setCurrentDay(1); 
                     }
                 }
             };
@@ -303,9 +308,9 @@
                             isImportant: false
                         }]);
                     } else if (type === 'accommodation') {
-                        setDraftItems([...draftItems, { id: Date.now(), type: 'accommodation', timeOfDay: "晚上", time: "", title: "", desc: "", isImportant: false }]);
+                        setDraftItems([...draftItems, { id: Date.now(), type: 'accommodation', timeOfDay: "晚上", time: "", title: "", desc: "", link: "", isImportant: false }]);
                     } else {
-                        setDraftItems([...draftItems, { id: Date.now(), type: type, timeOfDay: "上午", time: "", title: "", desc: "", isImportant: false }]);
+                        setDraftItems([...draftItems, { id: Date.now(), type: type, timeOfDay: "上午", time: "", title: "", desc: "", link: "", isImportant: false }]);
                     }
                 } else if (activeTab === 'spots') {
                     setDraftItems([...draftItems, { id: Date.now(), title: "", desc: "" }]);
@@ -369,7 +374,6 @@
                 <div className="w-full h-screen bg-[#f0ebe1] font-sans text-gray-800 flex justify-center items-center overflow-hidden">
                     <div className="w-full sm:max-w-md h-full sm:h-[90vh] sm:rounded-3xl bg-[#fbf7f0] relative flex flex-col shadow-2xl overflow-hidden border border-stone-300/60">
                         
-                        {/* 頂端控制列 */}
                         {!isEditing ? (
                             <div className="bg-[#fbf7f0] px-5 pt-10 pb-2 flex justify-between items-center z-20 shrink-0">
                                 <h1 className="font-serif text-2xl font-bold text-crimson-700">{tripName}</h1>
@@ -392,7 +396,6 @@
 
                         <div className="flex-1 overflow-y-auto no-scrollbar scroll-smooth content-area">
                             
-                            {/* 天數選擇列 */}
                             {(activeTab === 'itinerary' || activeTab === 'spots') && (
                                 <div className="sticky top-0 z-10 bg-[#fbf7f0] pt-2 pb-3 shadow-sm border-b border-stone-200 overflow-x-auto whitespace-nowrap px-4 no-scrollbar">
                                     <div className="flex gap-3">
@@ -421,7 +424,6 @@
 
                             <div className="px-5 pt-6 animate-fadeIn">
                                 
-                                {}
                                 {activeTab === 'itinerary' && (
                                     <>
                                         {!isEditing ? (
@@ -450,7 +452,6 @@
                                                     </div>
                                                 ) : (
                                                     dayData.itinerary.map((item, idx) => {
-                                                        // 大眾運輸卡片顯示
                                                         if (item.type === 'transit') {
                                                             return (
                                                                 <div key={idx} className="transit-card">
@@ -477,7 +478,6 @@
                                                             )
                                                         }
                                                         
-                                                        // 住宿卡片顯示
                                                         if (item.type === 'accommodation') {
                                                             return (
                                                                 <div key={idx} className="bg-[#f0f7ff] border border-[#dce8fb] rounded-[16px] py-5 px-5 flex items-center gap-5 shadow-sm relative mb-7 mt-3">
@@ -489,14 +489,22 @@
                                                                     </div>
                                                                     <div className="flex-1">
                                                                         <div className="text-[#60a5fa] text-[11px] font-bold uppercase tracking-[0.08em] mb-1">Accommodation</div>
-                                                                        <div className={`text-[#1e3a8a] text-[1.35rem] font-serif font-bold leading-tight ${item.time ? 'pr-12' : ''}`}>{item.title || '飯店名稱未設定'}</div>
+                                                                        <div className={`text-[#1e3a8a] text-[1.35rem] font-serif font-bold leading-tight ${item.time ? 'pr-12' : ''}`}>
+                                                                            {item.link ? (
+                                                                                <a href={item.link} target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors flex items-center gap-1.5 underline decoration-[#93c5fd] underline-offset-4">
+                                                                                    {item.title || '飯店名稱未設定'}
+                                                                                    <Icons.ExternalLink className="text-[#93c5fd] inline" width="16" height="16" />
+                                                                                </a>
+                                                                            ) : (
+                                                                                <>{item.title || '飯店名稱未設定'}</>
+                                                                            )}
+                                                                        </div>
                                                                         {item.desc && <div className="text-[#60a5fa] text-sm mt-1.5 font-medium leading-snug">{item.desc}</div>}
                                                                     </div>
                                                                 </div>
                                                             )
                                                         }
 
-                                                        // 景點、餐飲、一般項目的 Timeline 卡片
                                                         const isAttraction = item.type === 'attraction';
                                                         const isDining = item.type === 'dining';
                                                         const isShopping = item.type === 'shopping';
@@ -519,7 +527,16 @@
                                                                 </div>
                                                                 
                                                                 <div className={`bg-white p-4 rounded-xl shadow-sm border border-stone-100 relative z-10 ${item.isImportant ? 'border-l-4 border-l-crimson-600' : ''}`}>
-                                                                    <h4 className="text-[1.1rem] font-bold text-gray-800">{item.title || '未命名行程'}</h4>
+                                                                    <h4 className="text-[1.1rem] font-bold text-gray-800 flex items-center gap-2">
+                                                                        {item.link ? (
+                                                                            <a href={item.link} target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors flex items-center gap-1.5 underline decoration-stone-300 underline-offset-4">
+                                                                                {item.title || '未命名行程'}
+                                                                                <Icons.ExternalLink className="text-stone-400 inline" />
+                                                                            </a>
+                                                                        ) : (
+                                                                            <>{item.title || '未命名行程'}</>
+                                                                        )}
+                                                                    </h4>
                                                                     {item.desc && <p className="text-sm text-stone-500 mt-1.5 leading-relaxed">{item.desc}</p>}
                                                                 </div>
                                                             </div>
@@ -535,6 +552,13 @@
                                                                     <span className="text-xs font-bold text-stone-500 bg-stone-100 px-2 py-1 rounded">
                                                                         {item.type === 'transit' ? '交通' : item.type === 'attraction' ? '景點' : item.type === 'dining' ? '餐飲' : item.type === 'accommodation' ? '住宿' : item.type === 'shopping' ? '購物' : '一般'}
                                                                     </span>
+                                                                    
+                                                                    {item.type !== 'transit' && (
+                                                                        <label className={`flex items-center gap-1.5 text-xs font-bold cursor-pointer px-2 py-1 rounded-lg border transition-colors ${item.isImportant ? 'bg-crimson-100 border-crimson-300 text-crimson-700' : 'bg-stone-50 border-stone-200 text-stone-500'}`}>
+                                                                            <input type="checkbox" className="accent-crimson-600 w-4 h-4 cursor-pointer" checked={item.isImportant || false} onChange={(e) => updateItem(idx, 'isImportant', e.target.checked)} />
+                                                                            必備紅底
+                                                                        </label>
+                                                                    )}
                                                                 </div>
                                                                 <div className="flex gap-1">
                                                                     <button onClick={() => moveItem(idx, 'up')} disabled={idx === 0} className="p-1 text-stone-400 hover:text-gray-800 disabled:opacity-30"><Icons.ArrowUp /></button>
@@ -574,14 +598,19 @@
                                                             ) : (
                                                                 <>
                                                                     <div className="flex gap-2">
-                                                                        <select className="bg-stone-50 p-2 rounded-lg text-sm font-bold text-stone-600 outline-none border border-stone-200" value={item.timeOfDay || '上午'} onChange={(e) => updateItem(idx, 'timeOfDay', e.target.value)}>
-                                                                            <option value="上午">上午</option>
-                                                                            <option value="中午">中午</option>
-                                                                            <option value="下午">下午</option>
-                                                                            <option value="晚上">晚上</option>
-                                                                        </select>
+                                                                        {item.type !== 'accommodation' && (
+                                                                            <select className="bg-stone-50 p-2 rounded-lg text-sm font-bold text-stone-600 outline-none border border-stone-200" value={item.timeOfDay || '上午'} onChange={(e) => updateItem(idx, 'timeOfDay', e.target.value)}>
+                                                                                <option value="上午">上午</option>
+                                                                                <option value="中午">中午</option>
+                                                                                <option value="下午">下午</option>
+                                                                                <option value="晚上">晚上</option>
+                                                                            </select>
+                                                                        )}
                                                                         <input type="time" className="bg-stone-50 p-2 rounded-lg font-mono font-bold text-gray-700 outline-none w-28 border border-stone-200" value={item.time || ''} onChange={(e) => updateItem(idx, 'time', e.target.value)} />
                                                                         <input type="text" placeholder={item.type === 'accommodation' ? '飯店名稱 (如: 新宿華盛頓)' : item.type === 'shopping' ? '購物地點 (如: 超市補貨)' : '行程標題 (如: 羅馬競技場)'} className="flex-1 text-base font-bold border-b border-stone-200 pb-1 outline-none focus:border-crimson-400" value={item.title || ''} onChange={(e) => updateItem(idx, 'title', e.target.value)} />
+                                                                    </div>
+                                                                    <div className="flex gap-2 mt-1">
+                                                                        <input type="text" placeholder="加入 Google Maps 導航網址 (選填)" className="w-full p-2 bg-stone-50 border border-stone-200 rounded-lg text-xs text-blue-600 outline-none focus:border-blue-400" value={item.link || ''} onChange={(e) => updateItem(idx, 'link', e.target.value)} />
                                                                     </div>
                                                                     <textarea placeholder={item.type === 'accommodation' ? '備註說明 (如: 訂房代號、房型)' : '補充說明 (可留白)'} className="w-full text-base text-stone-600 outline-none resize-none h-16 mt-1" value={item.desc || ''} onChange={(e) => updateItem(idx, 'desc', e.target.value)} />
                                                                 </>
@@ -633,8 +662,8 @@
                                                         <div className="flex justify-between items-center">
                                                             <input type="text" placeholder="景點名稱 (如: 淺草寺)" className="flex-1 text-lg font-bold border-b border-stone-200 pb-1 outline-none focus:border-olive-400" value={item.title} onChange={(e) => updateItem(idx, 'title', e.target.value)} />
                                                             <div className="flex gap-1 ml-2">
-                                                                <button onClick={() => moveItem(idx, 'up')} disabled={idx === 0} className="p-1 text-stone-400 disabled:opacity-30"><Icons.ArrowUp /></button>
-                                                                <button onClick={() => moveItem(idx, 'down')} disabled={idx === draftItems.length - 1} className="p-1 text-stone-400 disabled:opacity-30"><Icons.ArrowDown /></button>
+                                                                <button onClick={() => moveItem(idx, 'up')} disabled={idx === 0} className="p-1 text-stone-400 hover:text-gray-800 disabled:opacity-30"><Icons.ArrowUp /></button>
+                                                                <button onClick={() => moveItem(idx, 'down')} disabled={idx === draftItems.length - 1} className="p-1 text-stone-400 hover:text-gray-800 disabled:opacity-30"><Icons.ArrowDown /></button>
                                                                 <button onClick={() => deleteItem(idx)} className="p-1 text-red-400 hover:text-red-600"><Icons.Trash /></button>
                                                             </div>
                                                         </div>
